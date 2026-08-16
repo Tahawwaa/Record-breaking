@@ -1,59 +1,167 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏋️ Record-breaking
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Record-breaking** is a personal workout and fitness tracking application built with **Laravel**.
 
-## About Laravel
+The goal of the project is to help users track their workouts, record personal records, monitor their progress, and visualize their performance over time.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> 🚧 This project is currently under development.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* 👤 Personal user profiles
+* 🏋️ Exercise management
+* 📋 Workout tracking
+* ⚖️ Weight and repetition tracking
+* 🏆 Personal Records (PR)
+* 📈 Progress charts
+* 📅 Workout history
+* 🔐 User authentication
+* 💾 Local data storage
+* 📱 Planned Android application
+* 🔌 REST API for mobile applications
 
-## Learning Laravel
+## 🛠️ Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Backend
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* PHP
+* Laravel
+* Laravel Eloquent ORM
+* Laravel Blade
+* REST API
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Database
 
-## Agentic Development
+* MySQL / SQLite
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Frontend
 
-```bash
-composer require laravel/boost --dev
+* Blade
+* HTML
+* CSS
+* JavaScript
 
-php artisan boost:install
+### Planned
+
+* Android application
+* Mobile API integration
+
+## 🏗️ Project Architecture
+
+The application follows the MVC architecture provided by Laravel:
+
+```text
+User
+ │
+ ├── Workouts
+ │    └── Workout Sets
+ │
+ ├── Personal Records
+ │
+ └── Progress
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+The planned architecture for the Android application is:
 
-## Contributing
+```text
+Android App
+     │
+     ▼
+  REST API
+     │
+     ▼
+  Laravel
+     │
+     ▼
+  Database
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📊 Progress Tracking
 
-## Code of Conduct
+Record-breaking is designed to track important workout metrics such as:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Weight
+* Repetitions
+* Exercise
+* Workout date
+* Personal records
+* Strength progression
 
-## Security Vulnerabilities
+Progress can be visualized using charts to make changes in performance easier to understand.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Installation
 
-## License
+Clone the repository:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# Record-breaking
+```bash
+git clone https://github.com/USERNAME/record-breaking.git
+```
+
+Enter the project directory:
+
+```bash
+cd record-breaking
+```
+
+Install PHP dependencies:
+
+```bash
+composer install
+```
+
+Create the environment file:
+
+```bash
+cp .env.example .env
+```
+
+Generate the application key:
+
+```bash
+php artisan key:generate
+```
+
+Configure your database in `.env`.
+
+Run migrations:
+
+```bash
+php artisan migrate
+```
+
+Start the development server:
+
+```bash
+php artisan serve
+```
+
+The application will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+## 🗺️ Roadmap
+
+* [x] Initialize Laravel project
+* [ ] Database design
+* [ ] Authentication
+* [ ] User profiles
+* [ ] Exercise management
+* [ ] Workout tracking
+* [ ] Personal Records
+* [ ] Progress tracking
+* [ ] Charts
+* [ ] REST API
+* [ ] Android application
+* [ ] API integration with Android
+
+## 🎯 Project Goal
+
+The main goal of Record-breaking is to build a practical fitness application while learning and applying real-world backend development concepts with Laravel.
+
+The project will gradually evolve from a simple local Laravel application into a complete system with a REST API and Android client.
+
+## 📄 License
+
+This project is currently for educational and personal use.
