@@ -15,6 +15,16 @@ class Exercise extends Model
     }
 
     /**
+     * Finds an exercise by name, ignoring case, creating it if none exists.
+     * Prevents "Bench Press" and "bench press" from becoming separate rows.
+     */
+    public static function findOrCreateByName(string $name): self
+    {
+        return static::whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->first()
+            ?? static::create(['name' => $name]);
+    }
+
+    /**
      * The heaviest record ever logged for this exercise.
      * Requires the `records` relation to already be loaded.
      */
@@ -35,17 +45,21 @@ class Exercise extends Model
             ->values();
 
         if ($thisMonth->count() < 2) {
-            return 'No change this month';
+            return __('No change this month');
         }
 
         $diff = (float) $thisMonth->last()->weight - (float) $thisMonth->first()->weight;
 
         if ($diff === 0.0) {
-            return 'No change this month';
+            return __('No change this month');
         }
 
         $formatted = rtrim(rtrim(number_format(abs($diff), 2), '0'), '.');
+        $sign = $diff > 0 ? '+' : '-';
 
-        return $diff > 0 ? "+{$formatted} lb this month" : "-{$formatted} lb this month";
+        // Isolated so the sign+number don't get bidi-reordered inside RTL text (e.g. Persian).
+        $amount = '<bdi dir="ltr">'.e($sign.$formatted.' kg').'</bdi>';
+
+        return __(':amount this month', ['amount' => $amount]);
     }
 }

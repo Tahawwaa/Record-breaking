@@ -19,15 +19,17 @@ class RecordController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $request->merge(['exercise' => trim((string) $request->input('exercise'))]);
+
         $validated = $request->validate([
             'exercise' => ['required', 'string', 'max:255'],
-            'weight' => ['required', 'numeric', 'min:0'],
+            'weight' => ['required', 'numeric', 'min:0', 'max:9999.99'],
             'reps' => ['required', 'integer', 'min:1'],
             'set_number' => ['required', 'integer', 'min:1'],
             'date' => ['required', 'date'],
         ]);
 
-        $exercise = Exercise::firstOrCreate(['name' => trim($validated['exercise'])]);
+        $exercise = Exercise::findOrCreateByName($validated['exercise']);
 
         $exercise->records()->create([
             'weight' => $validated['weight'],
@@ -38,6 +40,10 @@ class RecordController extends Controller
 
         return redirect()
             ->route('dashboard', ['exercise' => $exercise->name])
-            ->with('status', "Logged {$validated['weight']} lb x {$validated['reps']} for {$exercise->name}.");
+            ->with('status', __('Logged :weight kg x :reps for :name.', [
+                'weight' => $validated['weight'],
+                'reps' => $validated['reps'],
+                'name' => $exercise->name,
+            ]));
     }
 }

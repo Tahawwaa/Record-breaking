@@ -10,10 +10,10 @@
     </div>
     <p class="card-body mt-1.5">
         @if ($best)
-            Current best: <span style="color:var(--color-text);font-weight:500">{{ $best->weight_label }} lb &times; {{ $best->reps }}</span>
+            {{ __('Current best:') }} <bdi style="color:var(--color-text);font-weight:500">{{ $best->weight_label }} kg &times; {{ $best->reps }}</bdi>
         @else
-            No records yet
+            {{ __('No records yet') }}
         @endif
     </p>
-    <div class="card-meta">{{ $exercise->monthlyTrendLabel() }}</div>
+    <div class="card-meta">{!! $exercise->monthlyTrendLabel() !!}</div>
 </div>
