@@ -1,166 +1,94 @@
 # 🏋️ Record-breaking
 
-**Record-breaking** is a personal workout and fitness tracking application built with **Laravel**.
-
-The goal of the project is to help users track their workouts, record personal records, monitor their progress, and visualize their performance over time.
-
-> 🚧 This project is currently under development.
+**Record-breaking** is a personal workout and strength-tracking app built with **Laravel**. Log your sets, watch it automatically flag your personal records, and see your progress on a chart — in English or Persian (with full RTL support).
 
 ## ✨ Features
 
-* 👤 Personal user profiles
-* 🏋️ Exercise management
-* 📋 Workout tracking
-* ⚖️ Weight and repetition tracking
-* 🏆 Personal Records (PR)
-* 📈 Progress charts
-* 📅 Workout history
-* 🔐 User authentication
-* 💾 Local data storage
-* 📱 Planned Android application
-* 🔌 REST API for mobile applications
+* 📊 **Dashboard** — total workouts logged, PRs this month, current streak, favorite exercise
+* ➕ **Quick add** — log a set (exercise, weight, reps, set number, date) without leaving the dashboard
+* 🏆 **Automatic PR detection** — a set is flagged "New PR" the first time it beats every earlier attempt at that exercise
+* 📈 **Progress charts** — weight and reps over time, per exercise
+* 🏋️ **Exercise library** — add exercises on the fly through a custom modal, autocomplete when logging a set
+* 📅 **Full history** — every set ever logged, most recent first
+* 🌗 **Dark theme UI** — custom Tailwind design, no component library
+* 🌐 **Bilingual (English / Persian)** — language switcher, RTL layout, translated validation and flash messages
+* 💾 **SQLite by default** — zero-config local storage, no separate database server needed
+
+Not included (by design, for now): user accounts/login, multi-user support, a public API. It's a single-user, self-hosted tracker.
 
 ## 🛠️ Tech Stack
 
-### Backend
+* **Backend:** PHP 8.3+, Laravel 13, Eloquent, Blade
+* **Frontend:** Blade + Tailwind CSS v4 (via Vite), vanilla JS (no framework) for the dropdown/modal/date-picker widgets
+* **Database:** SQLite (default), works with MySQL/PostgreSQL too since it's plain Eloquent
+* **Localization:** Laravel's built-in translator (`lang/fa.json`, `lang/fa/validation.php`)
 
-* PHP
-* Laravel
-* Laravel Eloquent ORM
-* Laravel Blade
-* REST API
-
-### Database
-
-* MySQL / SQLite
-
-### Frontend
-
-* Blade
-* HTML
-* CSS
-* JavaScript
-
-### Planned
-
-* Android application
-* Mobile API integration
-
-## 🏗️ Project Architecture
-
-The application follows the MVC architecture provided by Laravel:
+## 🏗️ How it's put together
 
 ```text
-User
- │
- ├── Workouts
- │    └── Workout Sets
- │
- ├── Personal Records
- │
- └── Progress
+Exercise (name)
+   └── Record (weight, reps, set_number, date)
 ```
 
-The planned architecture for the Android application is:
-
-```text
-Android App
-     │
-     ▼
-  REST API
-     │
-     ▼
-  Laravel
-     │
-     ▼
-  Database
-```
-
-## 📊 Progress Tracking
-
-Record-breaking is designed to track important workout metrics such as:
-
-* Weight
-* Repetitions
-* Exercise
-* Workout date
-* Personal records
-* Strength progression
-
-Progress can be visualized using charts to make changes in performance easier to understand.
+* `DashboardController` — overview stats, quick-add form, progress chart data
+* `ExerciseController` — exercise list + creation (the "Add Exercise" modal)
+* `RecordController` — full history + set logging
+* `Record::withPersonalRecords()` — walks records oldest→newest per exercise and flags each new max weight as a PR
+* `SetLocale` middleware — reads the chosen language from the session and applies it for the request
 
 ## 🚀 Installation
 
-Clone the repository:
+Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/USERNAME/record-breaking.git
-```
-
-Enter the project directory:
-
-```bash
-cd record-breaking
-```
-
-Install PHP dependencies:
-
-```bash
+git clone git@github.com:Tahawwaa/Record-breaking.git
+cd Record-breaking
 composer install
+npm install
 ```
 
-Create the environment file:
+Set up the environment:
 
 ```bash
 cp .env.example .env
-```
-
-Generate the application key:
-
-```bash
 php artisan key:generate
+touch database/database.sqlite
 ```
 
-Configure your database in `.env`.
-
-Run migrations:
+Run migrations (add `--seed` to load sample exercises/records):
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
-Start the development server:
+Build the frontend assets:
+
+```bash
+npm run build
+# or, while developing:
+npm run dev
+```
+
+Start the server:
 
 ```bash
 php artisan serve
 ```
 
-The application will be available at:
+The app will be available at `http://127.0.0.1:8000`.
 
-```text
-http://127.0.0.1:8000
-```
+## 🗺️ Status
 
-## 🗺️ Roadmap
-
-* [x] Initialize Laravel project
-* [ ] Database design
-* [ ] Authentication
-* [ ] User profiles
-* [ ] Exercise management
-* [ ] Workout tracking
-* [ ] Personal Records
-* [ ] Progress tracking
-* [ ] Charts
+* [x] Database schema (exercises, records)
+* [x] Dashboard with live stats, quick add, and progress charts
+* [x] Automatic personal-record detection
+* [x] Exercise library with custom add-exercise modal
+* [x] Full workout history
+* [x] Dark theme UI
+* [x] English / Persian localization with RTL support
+* [ ] User accounts / authentication
 * [ ] REST API
-* [ ] Android application
-* [ ] API integration with Android
-
-## 🎯 Project Goal
-
-The main goal of Record-breaking is to build a practical fitness application while learning and applying real-world backend development concepts with Laravel.
-
-The project will gradually evolve from a simple local Laravel application into a complete system with a REST API and Android client.
+* [ ] Mobile app
 
 ## 📄 License
 
