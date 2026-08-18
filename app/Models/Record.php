@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Support\Preferences;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class Record extends Model
 {
@@ -27,7 +29,14 @@ class Record extends Model
     protected function weightLabel(): Attribute
     {
         return Attribute::make(
-            get: fn () => rtrim(rtrim(number_format((float) $this->weight, 2), '0'), '.'),
+            get: fn () => Preferences::formatWeight((float) $this->weight),
+        );
+    }
+
+    protected function dateLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => Preferences::formatDate($this->date),
         );
     }
 
@@ -40,6 +49,7 @@ class Record extends Model
         $runningMax = [];
 
         return static::with('exercise')
+            ->whereHas('exercise', fn ($query) => $query->where('user_id', Auth::id()))
             ->orderBy('date')
             ->orderBy('id')
             ->get()

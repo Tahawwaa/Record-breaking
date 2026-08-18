@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Exercise;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class ExerciseController extends Controller
@@ -12,7 +13,7 @@ class ExerciseController extends Controller
     public function index(): View
     {
         return view('exercises.index', [
-            'exercises' => Exercise::with('records')->get(),
+            'exercises' => Exercise::where('user_id', Auth::id())->with('records')->get(),
         ]);
     }
 
@@ -22,6 +23,8 @@ class ExerciseController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+        ], [], [
+            'name' => __('Exercise name'),
         ]);
 
         $exercise = Exercise::findOrCreateByName($validated['name']);

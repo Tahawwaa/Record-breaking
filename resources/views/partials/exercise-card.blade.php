@@ -10,7 +10,7 @@
     </div>
     <p class="card-body mt-1.5">
         @if ($best)
-            {{ __('Current best:') }} <bdi style="color:var(--color-text);font-weight:500">{{ $best->weight_label }} kg &times; {{ $best->reps }}</bdi>
+            {{ __('Current best:') }} <bdi style="color:var(--color-text);font-weight:500">{{ $best->weight_label }} {{ \App\Support\Preferences::weightUnit() }} &times; {{ $best->reps }}</bdi>
         @else
             {{ __('No records yet') }}
         @endif

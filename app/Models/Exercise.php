@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use App\Support\Preferences;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class Exercise extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['user_id', 'name'];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function records(): HasMany
     {
@@ -15,13 +23,16 @@ class Exercise extends Model
     }
 
     /**
-     * Finds an exercise by name, ignoring case, creating it if none exists.
-     * Prevents "Bench Press" and "bench press" from becoming separate rows.
+     * Finds an exercise by name within the current user's own list, ignoring
+     * case, creating it if none exists. Prevents "Bench Press" and
+     * "bench press" from becoming separate rows.
      */
     public static function findOrCreateByName(string $name): self
     {
-        return static::whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->first()
-            ?? static::create(['name' => $name]);
+        return static::where('user_id', Auth::id())
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first()
+            ?? static::create(['user_id' => Auth::id(), 'name' => $name]);
     }
 
     /**
@@ -48,17 +59,18 @@ class Exercise extends Model
             return __('No change this month');
         }
 
-        $diff = (float) $thisMonth->last()->weight - (float) $thisMonth->first()->weight;
+        $diffKg = (float) $thisMonth->last()->weight - (float) $thisMonth->first()->weight;
 
-        if ($diff === 0.0) {
+        if ($diffKg === 0.0) {
             return __('No change this month');
         }
 
-        $formatted = rtrim(rtrim(number_format(abs($diff), 2), '0'), '.');
-        $sign = $diff > 0 ? '+' : '-';
+        $unit = Preferences::weightUnit();
+        $formatted = Preferences::formatWeight(abs($diffKg));
+        $sign = $diffKg > 0 ? '+' : '-';
 
         // Isolated so the sign+number don't get bidi-reordered inside RTL text (e.g. Persian).
-        $amount = '<bdi dir="ltr">'.e($sign.$formatted.' kg').'</bdi>';
+        $amount = '<bdi dir="ltr">'.e("{$sign}{$formatted} {$unit}").'</bdi>';
 
         return __(':amount this month', ['amount' => $amount]);
     }

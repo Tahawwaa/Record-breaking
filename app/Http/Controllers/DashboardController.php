@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Exercise;
 use App\Models\Record;
+use App\Models\WorkoutPlan;
+use App\Support\Preferences;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -15,10 +18,17 @@ class DashboardController extends Controller
     {
         $records = Record::withPersonalRecords();
 
-        $exercises = Exercise::with('records')->get();
+        $exercises = Exercise::where('user_id', Auth::id())->with('records')->get();
 
         $selectedExercise = $exercises->firstWhere('name', $request->query('exercise'))
             ?? $exercises->first();
+
+        $plans = WorkoutPlan::where('user_id', Auth::id())
+            ->withCount('planExercises')
+            ->with('planExercises.exercise')
+            ->latest()
+            ->take(3)
+            ->get();
 
         return view('dashboard', [
             'totalWorkouts' => $records->count(),
@@ -32,6 +42,7 @@ class DashboardController extends Controller
             'chartLabels' => $selectedExercise ? $this->chartLabels($selectedExercise) : [],
             'weightChart' => $this->buildSeries($selectedExercise, 'weight'),
             'repsChart' => $this->buildSeries($selectedExercise, 'reps'),
+            'plans' => $plans,
         ]);
     }
 
@@ -76,7 +87,7 @@ class DashboardController extends Controller
     private function chartLabels(Exercise $exercise): array
     {
         return $exercise->records->sortBy('date')->values()
-            ->map(fn (Record $record) => $record->date->format('M j'))
+            ->map(fn (Record $record) => Preferences::formatShortDate($record->date))
             ->all();
     }
 
@@ -87,15 +98,19 @@ class DashboardController extends Controller
         }
 
         $values = $exercise->records->sortBy('date')->values()
-            ->map(fn (Record $record) => (float) $record->{$field})
+            ->map(fn (Record $record) => $field === 'weight'
+                ? Preferences::weightToDisplay((float) $record->weight)
+                : (float) $record->{$field})
             ->all();
 
         if (empty($values)) {
             return ['points' => [], 'linePoints' => '', 'areaPath' => '', 'hi' => 0, 'mid' => 0, 'lo' => 0];
         }
 
-        $min = min($values);
-        $max = max($values);
+        // Rounded to whole units so axis labels stay clean even after unit
+        // conversion (kg→lb division produces long, noisy decimals).
+        $min = round(min($values));
+        $max = round(max($values));
         $pad = max(1, (int) round(($max - $min) * 0.3));
         $lo = $min - $pad;
         $hi = $max + $pad;

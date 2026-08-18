@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Exercise;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +14,7 @@ class ExerciseRecordSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run(): void
+    public function run(User $user): void
     {
         $daysAgo = [27, 20, 13, 6, 3, 1];
 
@@ -37,7 +38,7 @@ class ExerciseRecordSeeder extends Seeder
         ];
 
         foreach ($series as $name => $data) {
-            $exercise = Exercise::firstOrCreate(['name' => $name]);
+            $exercise = Exercise::firstOrCreate(['user_id' => $user->id, 'name' => $name]);
 
             foreach ($daysAgo as $i => $offset) {
                 $exercise->records()->create([

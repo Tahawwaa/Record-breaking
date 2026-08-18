@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'fa' ? 'rtl' : 'ltr' }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'fa' ? 'rtl' : 'ltr' }}" data-theme="{{ \Illuminate\Support\Facades\Auth::user()->theme ?? 'default' }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,46 +12,76 @@
 </head>
 <body class="min-h-screen">
 
-    <nav class="nav border-b border-divider sticky top-0 bg-bg z-10 px-4 sm:px-7 h-auto min-h-16 py-3 flex-wrap gap-x-4 gap-y-2 sm:gap-7">
-        <a href="{{ route('dashboard') }}" class="nav-brand whitespace-nowrap">Record-breaking</a>
-        <a href="{{ route('dashboard') }}" @if (request()->routeIs('dashboard')) aria-current="page" @endif>{{ __('Dashboard') }}</a>
-        <a href="{{ route('exercises.index') }}" @if (request()->routeIs('exercises.*')) aria-current="page" @endif>{{ __('Exercises') }}</a>
-        <a href="{{ route('records.index') }}" @if (request()->routeIs('records.*')) aria-current="page" @endif>{{ __('History') }}</a>
+    <nav class="nav border-b border-divider sticky top-0 bg-bg z-10 px-4 sm:px-7 h-16">
+        <a href="{{ route('dashboard') }}" class="nav-brand whitespace-nowrap">
+            <svg width="26" height="26" viewBox="0 0 256 256" style="flex:none">
+                <defs>
+                    <linearGradient id="nav-logo-bg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+                        <stop offset="0" stop-color="#8f87ef"/>
+                        <stop offset="1" stop-color="#4a41b8"/>
+                    </linearGradient>
+                </defs>
+                <rect width="256" height="256" rx="56" fill="url(#nav-logo-bg)"/>
+                <g stroke="#fff" stroke-width="15" stroke-linecap="round"><line x1="70" y1="128" x2="186" y2="128"/></g>
+                <g fill="#fff">
+                    <rect x="56" y="92" width="16" height="72" rx="6"/>
+                    <rect x="32" y="72" width="16" height="112" rx="6"/>
+                    <rect x="184" y="92" width="16" height="72" rx="6"/>
+                    <rect x="208" y="72" width="16" height="112" rx="6"/>
+                </g>
+                <g stroke="#ffd166" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M96 176 L118 154 L134 168 L162 138"/><path d="M144 138 L162 138 L162 156"/></g>
+            </svg>
+            <span style="font-size:17px;letter-spacing:-0.01em">Record<span style="color:var(--color-accent)">breaking</span></span>
+        </a>
+        <a href="{{ route('dashboard') }}" class="hidden sm:inline" @if (request()->routeIs('dashboard')) aria-current="page" @endif>{{ __('Dashboard') }}</a>
+        <a href="{{ route('exercises.index') }}" class="hidden sm:inline" @if (request()->routeIs('exercises.*')) aria-current="page" @endif>{{ __('Exercises') }}</a>
+        <a href="{{ route('records.index') }}" class="hidden sm:inline" @if (request()->routeIs('records.*')) aria-current="page" @endif>{{ __('History') }}</a>
+        <a href="{{ route('plans.index') }}" class="hidden sm:inline" @if (request()->routeIs('plans.*')) aria-current="page" @endif>{{ __('Plans') }}</a>
+
         <div class="flex items-center gap-1" style="font-size:13px">
             <a href="{{ route('locale.switch', 'en') }}" style="{{ app()->getLocale() === 'en' ? 'color:var(--color-accent)' : '' }}">EN</a>
             <span class="text-muted">/</span>
             <a href="{{ route('locale.switch', 'fa') }}" style="{{ app()->getLocale() === 'fa' ? 'color:var(--color-accent)' : '' }}">فا</a>
         </div>
-        <button type="button" class="btn btn-primary whitespace-nowrap" onclick="openAddExerciseModal()">
-            <svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round"><path d="M128 40v176M40 128h176"/></svg>
-            {{ __('Add Exercise') }}
-        </button>
+
+        <a href="{{ route('settings.edit') }}" class="flex items-center" aria-label="{{ __('Settings') }}" @if (request()->routeIs('settings.*')) aria-current="page" @endif>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/><circle cx="12" cy="12" r="3"/></svg>
+        </a>
+
+        <a href="{{ route('profile.edit') }}" class="flex items-center" aria-label="{{ __('Profile') }}" @if (request()->routeIs('profile.*')) aria-current="page" @endif>
+            <svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="96" r="48"/><path d="M40 216c14-40 50-64 88-64s74 24 88 64"/></svg>
+        </a>
+
+        <form method="POST" action="{{ route('logout') }}" class="flex items-center">
+            @csrf
+            <button type="submit" aria-label="{{ __('Log out') }}" style="background:none;border:none;cursor:pointer;color:var(--color-muted);display:flex;align-items:center">
+                <svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M96 216H56a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16h40"/><path d="M176 176l48-48-48-48"/><path d="M224 128H104"/></svg>
+            </button>
+        </form>
     </nav>
 
-    <div id="add-exercise-modal" class="{{ $errors->has('name') ? '' : 'hidden' }} fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.6)" onclick="if (event.target === this) closeAddExerciseModal()">
-        <div class="card elev-sm w-full" style="max-width:360px">
-            <div class="card-title mb-1">{{ __('Add Exercise') }}</div>
-            <p class="card-body mb-4">{{ __('Give it a name to start tracking it.') }}</p>
-            <form method="POST" action="{{ route('exercises.store') }}">
-                @csrf
-                <div class="field">
-                    <label for="new-exercise-name">{{ __('Exercise name') }}</label>
-                    <input class="input" type="text" name="name" id="new-exercise-name" placeholder="{{ __('e.g. Pull-ups') }}" value="{{ old('name') }}" required>
-                </div>
-                @error('name')
-                    <p class="text-xs mt-2" style="color:#ff8080">{{ $message }}</p>
-                @enderror
-                <div class="flex gap-2 justify-end mt-5">
-                    <button type="button" class="btn" style="background:transparent;border:1px solid var(--color-divider);color:var(--color-text)" onclick="closeAddExerciseModal()">{{ __('Cancel') }}</button>
-                    <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
+    <nav class="bottom-tabs sm:hidden">
+        <a href="{{ route('dashboard') }}" class="bottom-tab" @if (request()->routeIs('dashboard')) aria-current="page" @endif>
+            <svg width="20" height="20" viewBox="0 0 256 256" fill="currentColor"><rect x="32" y="32" width="88" height="88" rx="14"/><rect x="136" y="32" width="88" height="88" rx="14"/><rect x="32" y="136" width="88" height="88" rx="14"/><rect x="136" y="136" width="88" height="88" rx="14"/></svg>
+            <span>{{ __('Dashboard') }}</span>
+        </a>
+        <a href="{{ route('exercises.index') }}" class="bottom-tab" @if (request()->routeIs('exercises.*')) aria-current="page" @endif>
+            <svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round"><line x1="46" y1="128" x2="210" y2="128"/><rect x="30" y="96" width="16" height="64" rx="4" fill="currentColor" stroke="none"/><rect x="10" y="80" width="16" height="96" rx="4" fill="currentColor" stroke="none"/><rect x="210" y="96" width="16" height="64" rx="4" fill="currentColor" stroke="none"/><rect x="230" y="80" width="16" height="96" rx="4" fill="currentColor" stroke="none"/></svg>
+            <span>{{ __('Exercises') }}</span>
+        </a>
+        <a href="{{ route('records.index') }}" class="bottom-tab" @if (request()->routeIs('records.*')) aria-current="page" @endif>
+            <svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><path d="M128 72v56l40 40"/></svg>
+            <span>{{ __('History') }}</span>
+        </a>
+        <a href="{{ route('plans.index') }}" class="bottom-tab" @if (request()->routeIs('plans.*')) aria-current="page" @endif>
+            <svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="40" y="32" width="176" height="192" rx="12"/><path d="M84 76h88M84 124h88M84 172h48"/></svg>
+            <span>{{ __('Plans') }}</span>
+        </a>
+    </nav>
 
-    <div class="max-w-[1360px] mx-auto px-7 pt-8 pb-16 flex flex-col gap-10">
+    <div class="max-w-[1360px] mx-auto px-4 sm:px-7 pt-8 pb-24 sm:pb-16 flex flex-col gap-10">
 
-        @if (session('status'))
+        @if (session('status') && ! in_array(session('status'), ['profile-updated', 'password-updated']))
             <div class="card elev-sm" style="border-color: var(--color-accent-2)">
                 <p class="card-body" style="color: var(--color-text)">{{ session('status') }}</p>
             </div>
@@ -63,16 +93,32 @@
 
     <script>
         function openAddExerciseModal() {
-            document.getElementById('add-exercise-modal').classList.remove('hidden');
+            var modal = document.getElementById('add-exercise-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
             document.getElementById('new-exercise-name').focus();
         }
 
         function closeAddExerciseModal() {
-            document.getElementById('add-exercise-modal').classList.add('hidden');
+            var modal = document.getElementById('add-exercise-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function openDeleteAccountModal() {
+            var modal = document.getElementById('delete-account-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeDeleteAccountModal() {
+            var modal = document.getElementById('delete-account-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') closeAddExerciseModal();
+            if (e.key === 'Escape') {
+                closeAddExerciseModal();
+                closeDeleteAccountModal();
+            }
         });
 
         function toggleDropdown(id, forceOpen) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Exercise;
 use App\Models\Record;
+use App\Support\Preferences;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -30,9 +31,10 @@ class RecordController extends Controller
         ]);
 
         $exercise = Exercise::findOrCreateByName($validated['exercise']);
+        $weightKg = Preferences::weightToKg((float) $validated['weight']);
 
         $exercise->records()->create([
-            'weight' => $validated['weight'],
+            'weight' => $weightKg,
             'reps' => $validated['reps'],
             'set_number' => $validated['set_number'],
             'date' => $validated['date'],
@@ -40,8 +42,9 @@ class RecordController extends Controller
 
         return redirect()
             ->route('dashboard', ['exercise' => $exercise->name])
-            ->with('status', __('Logged :weight kg x :reps for :name.', [
+            ->with('status', __('Logged :weight :unit x :reps for :name.', [
                 'weight' => $validated['weight'],
+                'unit' => Preferences::weightUnit(),
                 'reps' => $validated['reps'],
                 'name' => $exercise->name,
             ]));

@@ -2,6 +2,10 @@
 
 @section('title', __('Dashboard') . ' · ' . config('app.name'))
 
+@php
+    $weightUnit = \App\Support\Preferences::weightUnit();
+@endphp
+
 @section('content')
 
 <section>
@@ -74,7 +78,7 @@
                 @include('partials.exercise-select', ['id' => 'qa-exercise', 'name' => 'exercise', 'options' => $allExercises->pluck('name'), 'selected' => old('exercise', $selectedExercise?->name), 'freeText' => true])
             </div>
             <div class="grid grid-cols-3 gap-2.5">
-                <div class="field"><label for="qa-weight">{{ __('Weight (kg)') }}</label><input class="input" id="qa-weight" name="weight" type="number" step="0.5" min="0" placeholder="80" value="{{ old('weight') }}" required></div>
+                <div class="field"><label for="qa-weight">{{ __('Weight (:unit)', ['unit' => $weightUnit]) }}</label><input class="input" id="qa-weight" name="weight" type="number" step="0.5" min="0" placeholder="{{ $weightUnit === 'lb' ? '175' : '80' }}" value="{{ old('weight') }}" required></div>
                 <div class="field"><label for="qa-reps">{{ __('Reps') }}</label><input class="input" id="qa-reps" name="reps" type="number" min="1" placeholder="5" value="{{ old('reps') }}" required></div>
                 <div class="field"><label for="qa-set">{{ __('Set') }}</label><input class="input" id="qa-set" name="set_number" type="number" min="1" placeholder="1" value="{{ old('set_number', 1) }}" required></div>
             </div>
@@ -104,12 +108,29 @@
 
     @if ($selectedExercise && count($chartLabels) > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @include('partials.chart', ['title' => __('Weight (kg)'), 'chart' => $weightChart, 'labels' => $chartLabels, 'color' => 'var(--color-accent)', 'areaColor' => 'var(--color-accent-soft)'])
+            @include('partials.chart', ['title' => __('Weight (:unit)', ['unit' => $weightUnit]), 'chart' => $weightChart, 'labels' => $chartLabels, 'color' => 'var(--color-accent)', 'areaColor' => 'var(--color-accent-soft)'])
             @include('partials.chart', ['title' => __('Reps'), 'chart' => $repsChart, 'labels' => $chartLabels, 'color' => 'var(--color-accent-2)', 'areaColor' => 'var(--color-accent-2-soft)'])
         </div>
     @else
         <p class="card-body">{{ __('Log a few sets to see progression charts here.') }}</p>
     @endif
+</section>
+
+<section>
+    <div class="flex items-center justify-between mb-3.5">
+        <span class="card-kicker">{{ __('Your workout plans') }}</span>
+        <a href="{{ route('plans.index') }}" style="font-size:13px">{{ __('View all') }}</a>
+    </div>
+    <div class="grid gap-4" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+        @forelse ($plans as $plan)
+            @include('partials.plan-card', ['plan' => $plan])
+        @empty
+            <a href="{{ route('plans.create') }}" class="card elev-sm" style="text-decoration:none;color:inherit;align-items:center;justify-content:center;text-align:center;gap:6px;min-height:104px">
+                <svg width="20" height="20" viewBox="0 0 256 256" fill="none" stroke="var(--color-accent)" stroke-width="20" stroke-linecap="round"><path d="M128 40v176M40 128h176"/></svg>
+                <span class="text-sm" style="color:var(--color-muted)">{{ __('Create your first workout plan') }}</span>
+            </a>
+        @endforelse
+    </div>
 </section>
 
 <section>
