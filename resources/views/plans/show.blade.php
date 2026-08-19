@@ -24,7 +24,7 @@
                 </form>
             </div>
 
-            @if ($errors->any() && $errors->hasAny(['name', 'day_of_week', 'muscle_group', 'description']))
+            @if ($errors->any() && $errors->hasAny(['name', 'day_of_week', 'muscle_groups', 'description']))
                 <div class="text-sm mb-3" style="color:#ff6a6a">
                     <ul class="list-disc pl-4">
                         @foreach ($errors->all() as $error)
@@ -41,24 +41,24 @@
                     <label for="plan-name">{{ __('Plan name') }}</label>
                     <input class="input" type="text" name="name" id="plan-name" value="{{ old('name', $plan->name) }}" required>
                 </div>
-                <div class="grid grid-cols-2 gap-2.5">
-                    <div class="field">
-                        <label for="plan-day">{{ __('Day') }}</label>
-                        <select class="input" name="day_of_week" id="plan-day">
-                            <option value="">{{ __('Any day') }}</option>
-                            @foreach (\App\Models\WorkoutPlan::dayOptions() as $value => $label)
-                                <option value="{{ $value }}" @selected(old('day_of_week', $plan->day_of_week) === $value)>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="plan-muscle-group">{{ __('Muscle group') }}</label>
-                        <select class="input" name="muscle_group" id="plan-muscle-group">
-                            <option value="">{{ __('Not set') }}</option>
-                            @foreach (\App\Models\WorkoutPlan::muscleGroupOptions() as $value => $label)
-                                <option value="{{ $value }}" @selected(old('muscle_group', $plan->muscle_group) === $value)>{{ $label }}</option>
-                            @endforeach
-                        </select>
+                <div class="field">
+                    <label for="plan-day">{{ __('Day') }}</label>
+                    <select class="input" name="day_of_week" id="plan-day">
+                        <option value="">{{ __('Any day') }}</option>
+                        @foreach (\App\Models\WorkoutPlan::dayOptions() as $value => $label)
+                            <option value="{{ $value }}" @selected(old('day_of_week', $plan->day_of_week) === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="field">
+                    <label>{{ __('Muscle groups') }}</label>
+                    <div class="flex flex-wrap gap-x-3 gap-y-1.5">
+                        @foreach (\App\Models\WorkoutPlan::muscleGroupOptions() as $value => $label)
+                            <label class="flex items-center gap-1.5" style="font-size:13px;color:var(--color-muted)">
+                                <input type="checkbox" name="muscle_groups[]" value="{{ $value }}" @checked(in_array($value, old('muscle_groups', $plan->muscle_groups ?? [])))>
+                                {{ $label }}
+                            </label>
+                        @endforeach
                     </div>
                 </div>
                 <div class="field">

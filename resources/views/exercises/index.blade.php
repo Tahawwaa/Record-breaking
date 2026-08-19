@@ -16,6 +16,16 @@
         </button>
     </div>
 
+    <form method="GET" action="{{ route('exercises.index') }}" class="field mb-4" style="max-width:260px">
+        <label for="category-filter">{{ __('Category') }}</label>
+        <select class="input" name="category" id="category-filter" onchange="this.form.submit()">
+            <option value="">{{ __('All categories') }}</option>
+            @foreach (\App\Models\Exercise::categoryOptions() as $value => $label)
+                <option value="{{ $value }}" @selected($selectedCategory === $value)>{{ $label }}</option>
+            @endforeach
+        </select>
+    </form>
+
     <div class="grid gap-4" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
         @forelse ($exercises as $exercise)
             @include('partials.exercise-card', ['exercise' => $exercise])
@@ -23,13 +33,17 @@
             <p class="card-body">{{ __('No exercises yet.') }}</p>
         @endforelse
     </div>
+
+    <div class="mt-5">
+        {{ $exercises->links() }}
+    </div>
 </section>
 
-<div id="add-exercise-modal" class="{{ $errors->has('name') ? '' : 'hidden' }} fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.6)" onclick="if (event.target === this) closeAddExerciseModal()">
+<div id="add-exercise-modal" class="{{ $errors->hasAny(['name', 'categories', 'image']) ? '' : 'hidden' }} fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.6)" onclick="if (event.target === this) closeAddExerciseModal()">
     <div class="card elev-sm w-full" style="max-width:360px">
         <div class="card-title mb-1">{{ __('Add Exercise') }}</div>
         <p class="card-body mb-4">{{ __('Give it a name to start tracking it.') }}</p>
-        <form method="POST" action="{{ route('exercises.store') }}">
+        <form method="POST" action="{{ route('exercises.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="field">
                 <label for="new-exercise-name">{{ __('Exercise name') }}</label>
@@ -38,6 +52,31 @@
             @error('name')
                 <p class="text-xs mt-2" style="color:#ff8080">{{ $message }}</p>
             @enderror
+
+            <div class="field mt-3">
+                <label>{{ __('Categories') }}</label>
+                <div class="flex flex-wrap gap-x-3 gap-y-1.5">
+                    @foreach (\App\Models\Exercise::categoryOptions() as $value => $label)
+                        <label class="flex items-center gap-1.5" style="font-size:13px;color:var(--color-muted)">
+                            <input type="checkbox" name="categories[]" value="{{ $value }}" @checked(in_array($value, old('categories', [])))>
+                            {{ $label }}
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+            @error('categories')
+                <p class="text-xs mt-2" style="color:#ff8080">{{ $message }}</p>
+            @enderror
+
+            <div class="field mt-3">
+                <label for="new-exercise-image">{{ __('Photo (optional)') }}</label>
+                <input class="input" type="file" name="image" id="new-exercise-image" accept="image/png,image/jpeg,image/webp">
+                <p class="text-xs mt-1" style="color:var(--color-muted)">{{ __('Recommended: a square JPG or WEBP photo, at least 400×400px, under 2MB.') }}</p>
+            </div>
+            @error('image')
+                <p class="text-xs mt-2" style="color:#ff8080">{{ $message }}</p>
+            @enderror
+
             <div class="flex gap-2 justify-end mt-5">
                 <button type="button" class="btn" style="background:transparent;border:1px solid var(--color-divider);color:var(--color-text)" onclick="closeAddExerciseModal()">{{ __('Cancel') }}</button>
                 <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>

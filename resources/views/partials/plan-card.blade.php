@@ -11,14 +11,14 @@
         <div class="card-title" style="font-size:16px">{{ $plan->name }}</div>
     </div>
 
-    @if ($plan->day_label || $plan->muscle_group_label)
+    @if ($plan->day_label || $plan->muscle_group_labels)
         <div class="flex flex-wrap gap-1.5 mt-1.5">
             @if ($plan->day_label)
                 <span class="tag" style="background:var(--color-accent-soft);color:var(--color-accent)">{{ $plan->day_label }}</span>
             @endif
-            @if ($plan->muscle_group_label)
-                <span class="tag" style="background:var(--color-divider);color:var(--color-muted)">{{ $plan->muscle_group_label }}</span>
-            @endif
+            @foreach ($plan->muscle_group_labels as $label)
+                <span class="tag" style="background:var(--color-divider);color:var(--color-muted)">{{ $label }}</span>
+            @endforeach
         </div>
     @endif
 

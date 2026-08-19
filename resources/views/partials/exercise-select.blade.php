@@ -1,10 +1,11 @@
 @php
     $autosubmitAttr = ($autosubmit ?? false) ? 'true' : 'false';
     $freeText = $freeText ?? false;
+    $required = $required ?? true;
 @endphp
 <div class="custom-dropdown relative" style="{{ $style ?? '' }}">
     @if ($freeText)
-        <input type="text" class="input" name="{{ $name }}" id="{{ $id }}" value="{{ $selected }}" placeholder="{{ __('Select or type an exercise') }}" autocomplete="off" required onfocus="toggleDropdown('{{ $id }}', true)">
+        <input type="text" class="input" name="{{ $name }}" id="{{ $id }}" value="{{ $selected }}" placeholder="{{ __('Select or type an exercise') }}" autocomplete="off" @required($required) onfocus="toggleDropdown('{{ $id }}', true)" onblur="closeDropdownDelayed('{{ $id }}')">
     @else
         <input type="hidden" name="{{ $name }}" id="{{ $id }}" value="{{ $selected }}" data-autosubmit="{{ $autosubmitAttr }}">
         <button type="button" class="input flex items-center justify-between gap-2" style="cursor:pointer;text-align:start" onclick="toggleDropdown('{{ $id }}')">

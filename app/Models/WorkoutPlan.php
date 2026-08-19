@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WorkoutPlan extends Model
 {
-    protected $fillable = ['user_id', 'name', 'day_of_week', 'muscle_group', 'description'];
+    protected $fillable = ['user_id', 'name', 'day_of_week', 'muscle_groups', 'description'];
+
+    protected $casts = [
+        'muscle_groups' => 'array',
+    ];
 
     private const DAY_LABELS = [
         'sunday' => 'Sunday', 'monday' => 'Monday', 'tuesday' => 'Tuesday',
@@ -70,10 +74,13 @@ class WorkoutPlan extends Model
         );
     }
 
-    protected function muscleGroupLabel(): Attribute
+    protected function muscleGroupLabels(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->muscle_group ? __(self::MUSCLE_GROUP_LABELS[$this->muscle_group] ?? $this->muscle_group) : null,
+            get: fn () => collect($this->muscle_groups ?? [])
+                ->map(fn ($key) => __(self::MUSCLE_GROUP_LABELS[$key] ?? $key))
+                ->values()
+                ->all(),
         );
     }
 }
