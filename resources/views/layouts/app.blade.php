@@ -14,24 +14,16 @@
 
     <nav class="nav border-b border-divider sticky top-0 bg-bg z-10 px-4 sm:px-7 h-16">
         <a href="{{ route('dashboard') }}" class="nav-brand whitespace-nowrap">
-            <svg width="26" height="26" viewBox="0 0 256 256" style="flex:none">
-                <defs>
-                    <linearGradient id="nav-logo-bg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
-                        <stop offset="0" stop-color="#8f87ef"/>
-                        <stop offset="1" stop-color="#4a41b8"/>
-                    </linearGradient>
-                </defs>
-                <rect width="256" height="256" rx="56" fill="url(#nav-logo-bg)"/>
-                <g stroke="#fff" stroke-width="15" stroke-linecap="round"><line x1="70" y1="128" x2="186" y2="128"/></g>
-                <g fill="#fff">
-                    <rect x="56" y="92" width="16" height="72" rx="6"/>
-                    <rect x="32" y="72" width="16" height="112" rx="6"/>
-                    <rect x="184" y="92" width="16" height="72" rx="6"/>
-                    <rect x="208" y="72" width="16" height="112" rx="6"/>
+            <svg width="36" height="36" viewBox="0 0 500 500" style="flex:none;color:var(--color-accent)">
+                <g fill="none" stroke="currentColor" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="40" y="165" width="90" height="170" rx="44"/>
+                    <rect x="130" y="200" width="48" height="100" rx="14"/>
+                    <line x1="178" y1="250" x2="322" y2="250"/>
+                    <rect x="322" y="200" width="48" height="100" rx="14"/>
+                    <rect x="370" y="165" width="90" height="170" rx="44"/>
                 </g>
-                <g stroke="#ffd166" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M96 176 L118 154 L134 168 L162 138"/><path d="M144 138 L162 138 L162 156"/></g>
             </svg>
-            <span style="font-size:17px;letter-spacing:-0.01em">Record<span style="color:var(--color-accent)">breaking</span></span>
+            <span style="font-size:19px;letter-spacing:-0.01em">Record<span style="color:var(--color-accent)">breaking</span></span>
         </a>
         <a href="{{ route('dashboard') }}" class="hidden sm:inline" @if (request()->routeIs('dashboard')) aria-current="page" @endif>{{ __('Dashboard') }}</a>
         <a href="{{ route('exercises.index') }}" class="hidden sm:inline" @if (request()->routeIs('exercises.*')) aria-current="page" @endif>{{ __('Exercises') }}</a>
@@ -43,6 +35,12 @@
             <span class="text-muted">/</span>
             <a href="{{ route('locale.switch', 'fa') }}" style="{{ app()->getLocale() === 'fa' ? 'color:var(--color-accent)' : '' }}">فا</a>
         </div>
+
+        @if (\Illuminate\Support\Facades\Auth::user()->is_admin)
+            <a href="{{ url('/admin') }}" class="flex items-center" aria-label="{{ __('Admin panel') }}" title="{{ __('Admin panel') }}" style="color:#f59e0b">
+                <svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M128 24l88 32v64c0 66-37.6 110-88 112-50.4-2-88-46-88-112V56z"/><path d="M96 132l24 24 40-48"/></svg>
+            </a>
+        @endif
 
         <a href="{{ route('settings.edit') }}" class="flex items-center" aria-label="{{ __('Settings') }}" @if (request()->routeIs('settings.*')) aria-current="page" @endif>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -151,6 +149,14 @@
                 if (wrapper && !wrapper.contains(e.target)) panel.classList.add('hidden');
             });
         });
+
+        function closeDropdownDelayed(id) {
+            // Delayed so a click on a dropdown-option (which blurs the input first) still registers.
+            setTimeout(function () {
+                var panel = document.getElementById(id + '-panel');
+                if (panel) panel.classList.add('hidden');
+            }, 150);
+        }
 
         @php
             $weekdayLabels = app()->getLocale() === 'fa'
