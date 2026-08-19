@@ -1,32 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="500" y2="500" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#8f87ef"/>
       <stop offset="1" stop-color="#4a41b8"/>
     </linearGradient>
-    <linearGradient id="bar" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#e8e6ff"/>
-    </linearGradient>
   </defs>
 
-  <rect x="0" y="0" width="256" height="256" rx="56" fill="url(#bg)"/>
-  <rect x="0" y="0" width="256" height="256" rx="56" fill="#000000" opacity="0.06"/>
+  <rect x="0" y="0" width="500" height="500" rx="110" fill="url(#bg)"/>
 
-  <!-- barbell -->
-  <g stroke="url(#bar)" stroke-width="15" stroke-linecap="round">
-    <line x1="70" y1="128" x2="186" y2="128"/>
-  </g>
-  <g fill="url(#bar)">
-    <rect x="56" y="92" width="16" height="72" rx="6"/>
-    <rect x="32" y="72" width="16" height="112" rx="6"/>
-    <rect x="184" y="92" width="16" height="72" rx="6"/>
-    <rect x="208" y="72" width="16" height="112" rx="6"/>
-  </g>
-
-  <!-- small upward trend / PR accent -->
-  <g stroke="#ffd166" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M96 176 L118 154 L134 168 L162 138"/>
-    <path d="M144 138 L162 138 L162 156"/>
+  <g fill="none" stroke="#ffffff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="52" y="172" width="86" height="156" rx="42"/>
+    <rect x="138" y="205" width="46" height="90" rx="13"/>
+    <line x1="184" y1="250" x2="316" y2="250"/>
+    <rect x="316" y="205" width="46" height="90" rx="13"/>
+    <rect x="362" y="172" width="86" height="156" rx="42"/>
   </g>
 </svg>
