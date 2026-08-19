@@ -15,8 +15,8 @@
     </div>
 
     <div class="field">
-        <label for="email">{{ __('Email') }}</label>
-        <input class="input" id="email" name="email" type="email" value="{{ old('email', $user->email) }}" required autocomplete="username">
+        <label for="email">{{ __('Email (optional)') }}</label>
+        <input class="input" id="email" name="email" type="email" value="{{ old('email', $user->email) }}" autocomplete="email">
         @error('email')
             <p class="text-xs mt-1" style="color:#ff8080">{{ $message }}</p>
         @enderror

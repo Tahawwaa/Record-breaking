@@ -11,17 +11,17 @@
     @csrf
 
     <div class="field">
-        <label for="name">{{ __('Name') }}</label>
-        <input class="input" type="text" name="name" id="name" value="{{ old('name') }}" required autofocus autocomplete="name">
-        @error('name')
+        <label for="phone">{{ __('Phone number') }}</label>
+        <input class="input" type="tel" name="phone" id="phone" value="{{ old('phone') }}" required autofocus autocomplete="tel">
+        @error('phone')
             <p class="text-xs mt-1" style="color:#ff8080">{{ $message }}</p>
         @enderror
     </div>
 
     <div class="field">
-        <label for="email">{{ __('Email') }}</label>
-        <input class="input" type="email" name="email" id="email" value="{{ old('email') }}" required autocomplete="username">
-        @error('email')
+        <label for="username">{{ __('Username') }}</label>
+        <input class="input" type="text" name="username" id="username" value="{{ old('username') }}" required autocomplete="username">
+        @error('username')
             <p class="text-xs mt-1" style="color:#ff8080">{{ $message }}</p>
         @enderror
     </div>

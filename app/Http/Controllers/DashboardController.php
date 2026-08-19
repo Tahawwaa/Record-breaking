@@ -16,6 +16,10 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
+        if (! Auth::check()) {
+            return view('home');
+        }
+
         $records = Record::withPersonalRecords();
 
         $exercises = Exercise::where('user_id', Auth::id())->with('records')->get();

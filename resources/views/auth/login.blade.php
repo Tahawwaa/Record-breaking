@@ -15,9 +15,9 @@
     @csrf
 
     <div class="field">
-        <label for="email">{{ __('Email') }}</label>
-        <input class="input" type="email" name="email" id="email" value="{{ old('email') }}" required autofocus autocomplete="username">
-        @error('email')
+        <label for="username">{{ __('Username') }}</label>
+        <input class="input" type="text" name="username" id="username" value="{{ old('username') }}" required autofocus autocomplete="username">
+        @error('username')
             <p class="text-xs mt-1" style="color:#ff8080">{{ $message }}</p>
         @enderror
     </div>
@@ -30,12 +30,11 @@
         @enderror
     </div>
 
-    <div class="flex items-center justify-between" style="font-size:13px">
+    <div class="flex items-center" style="font-size:13px">
         <label class="flex items-center gap-2" style="color:var(--color-muted)">
             <input type="checkbox" name="remember" @checked(old('remember', true))>
             {{ __('Remember me') }}
         </label>
-        <a href="{{ route('password.request') }}">{{ __('Forgot your password?') }}</a>
     </div>
 
     <button type="submit" class="btn btn-primary btn-block mt-1.5">{{ __('Log in') }}</button>

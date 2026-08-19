@@ -16,8 +16,12 @@ Route::get('/locale/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('locale.switch');
 
+// Public for guests (shows a landing page); authenticated visitors get their
+// dashboard instead. Every other route below stays behind 'auth', so any
+// action a guest tries still bounces them to the login page as usual.
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
 Route::middleware('auth')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/exercises', [ExerciseController::class, 'index'])->name('exercises.index');
     Route::post('/exercises', [ExerciseController::class, 'store'])->name('exercises.store');
     Route::get('/history', [RecordController::class, 'index'])->name('records.index');
@@ -41,3 +45,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// A real, matched route (unlike a bare unmatched URL) so 404s still go through
+// the 'web' middleware group — otherwise the error page loses session state
+// entirely: no locale preference, and `Auth::check()` reads as a guest even
+// when signed in.
+Route::fallback(fn () => abort(404));
