@@ -38,9 +38,13 @@ return [
             'report' => false,
         ],
 
+        // On hosts with no CLI (so `storage:link` can't run and there's no way to
+        // create the symlink by hand), set PUBLIC_DISK_DIRECT=true to write uploads
+        // straight into public/storage instead of relying on the symlink. Leave it
+        // unset anywhere the standard symlink works — that stays the default.
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => env('PUBLIC_DISK_DIRECT') ? public_path('storage') : storage_path('app/public'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
